@@ -1,6 +1,6 @@
 # Welcome to StockTrackr
 
-![Misc/StockTrackr(Logo).png]()
+![Misc/StockTrackr.png]()
 
 StockTrackr is an inventory management system equipped with all the tools necessary for keeping track of your
 inventory, orders, and transactions. With a simple, easy to use interface, StockTrackr is ideal for smaller teams
