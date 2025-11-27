@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockTrackr - Inventory Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- We are using a custom styles instead of Bootstrap -->
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div style="display:flex; align-items:center;">
+            <div class="brand">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="StockTrackr logo" width="46" height="46">
+                </div>
+                <div>
+                    <div class="brand-text">Stock<span class="brand-highlight">Trackr</span></div>
+                </div>
+            </div>
+            <nav class="navlinks">
+                <a href="index.html" aria-current="page">Dashboard</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html">Categories</a>
+                <a href="query6.html">Transactions</a>
+            </nav>
+        </div>
+        <div class="right-actions">
+            <button class="btn ghost">Manager</button>
+            <button class="btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="title">
+            <h1>Inventory Dashboard</h1>
+            <p class="subtitle">TCSS 445 Phase III - Database Query Interfaces</p>
+        </div>
+
+        <div class="query-grid">
+            <a href="query1.html" class="query-card">
+                <h3>📦 Query 1: Order Details</h3>
+                <p>View complete order information including supplier/customer details and line items for both purchase and sales orders.</p>
+                <span class="query-badge badge-html">Direct HTML</span>
+            </a>
+
+            <a href="query2.html" class="query-card">
+                <h3>📊 Query 2: High-Demand Categories</h3>
+                <p>Find items in categories with high order volumes using nested queries and GROUP BY aggregation.</p>
+                <span class="query-badge badge-json">JSON Pattern</span>
+            </a>
+
+            <a href="query3.html" class="query-card">
+                <h3>📈 Query 3: Stock Comparison</h3>
+                <p>Compare item stock levels to category averages using correlated subqueries.</p>
+                <span class="query-badge badge-json">JSON Pattern</span>
+            </a>
+
+            <a href="query4.html" class="query-card">
+                <h3>🔄 Query 4: Purchase Quantities</h3>
+                <p>View all items with their total purchase order quantities using FULL OUTER JOIN emulation.</p>
+                <span class="query-badge badge-json">JSON Pattern</span>
+            </a>
+
+            <a href="query5.html" class="query-card">
+                <h3>🏷️ Query 5: Category Union</h3>
+                <p>List items from Office Supplies OR Bakery categories using UNION set operation.</p>
+                <span class="query-badge badge-html">Direct HTML</span>
+            </a>
+
+            <a href="query6.html" class="query-card">
+                <h3>💰 Query 6: Fund Transfer</h3>
+                <p>Demonstrates atomic transaction processing with BEGIN, COMMIT, and ROLLBACK operations.</p>
+                <span class="query-badge badge-transaction">Transaction</span>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <h2>About This Project</h2>
+            <ul>
+                <li><strong>Course:</strong> TCSS 445 - Database System Design</li>
+                <li><strong>Project:</strong> Phase III - Design and Web Interface</li>
+                <li><strong>System:</strong> StockTrackr Inventory Control System</li>
+                <li><strong>Database:</strong> MySQL/MariaDB with normalized schema (BCNF)</li>
+                <li><strong>Implementation:</strong> Node.js + Express + MySQL2</li>
+                <li><strong>Patterns:</strong> Direct HTML Generation & JSON Response with Dynamic Display</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 16px;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 16px; color: #1f2933; margin-bottom: 4px;">
+                            Stock<span style="color: #F6A800;">Trackr</span>
+                        </div>
+                        <div style="font-size: 13px; color: #666;">
+                            Inventory Control System © Fall/2025
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; font-size: 16px; color: #1f2933; margin-bottom: 4px;">
+                        Team<span style="color: #F6A800;">Members</span>
+                    </div>
+                    <div style="font-size: 13px; color: #666;">
+                        Arafa Mohamed, Evin Roen, Natan Artemiev
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
+
+
+
+
+
+
