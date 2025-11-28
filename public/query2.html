@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockTrackr — High-Demand Categories</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div style="display:flex; align-items:center;">
+            <div class="brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <img src="assets/logo.png" alt="StockTrackr logo" width="46" height="46">
+                    </div>
+                </a>
+                <div>
+                    <div style="font-weight:800; font-size:18px; letter-spacing:-0.2px;">Stock<span style="color:#F6A800">Trackr</span></div>
+                </div>
+            </div>
+            <nav class="navlinks">
+                <a href="index.html">Dashboard</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html" aria-current="page">Categories</a>
+                <a href="query6.html">Transactions</a>
+            </nav>
+        </div>
+        <div class="right-actions">
+            <button class="btn ghost">Manager</button>
+            <button class="btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="title">
+            <h1>High-Demand Categories</h1>
+            <p class="subtitle">Items in categories with high total order volume</p>
+        </div>
+
+        <div class="card">
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="minQuantity">Minimum Total Orders (units)</label>
+                    <input type="number" id="minQuantity" name="minQuantity" value="50" min="1" required />
+                    <small style="color:#666; font-size:13px;">Shows items from categories where total ordered quantity exceeds this value</small>
+                </div>
+                
+                <button type="submit" class="btn-primary">Search Categories</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="hidden">
+            <div class="results-card">
+                <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Results</h3>
+                <div id="messageContainer"></div>
+                <table id="resultsTable" class="hidden">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.getElementById('categoryForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const minQuantity = document.getElementById('minQuantity').value;
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsTable = document.getElementById('resultsTable');
+        const tableBody = document.getElementById('tableBody');
+        const messageContainer = document.getElementById('messageContainer');
+        
+        // Clear previous results
+        tableBody.innerHTML = '';
+        messageContainer.innerHTML = '';
+        resultsSection.classList.remove('hidden');
+        resultsTable.classList.add('hidden');
+        
+        try {
+            const response = await fetch(`/api/high-demand-categories?minQuantity=${encodeURIComponent(minQuantity)}`);
+            const data = await response.json();
+            
+            if (response.ok && Array.isArray(data)) {
+                // Display results in table
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.item_id}</td>
+                        <td>${item.item_name}</td>
+                        <td>${item.category_name}</td>
+                        <td>${item.quantity_in_stock}</td>
+                        <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                resultsTable.classList.remove('hidden');
+            } else {
+                // No results found
+                messageContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        ${data.message || 'No items found matching criteria'}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            messageContainer.innerHTML = `
+                <div class="alert alert-error">
+                    Error fetching data. Please try again.
+                </div>
+            `;
+        }
+    });
+</script>
+</body>
+</html>
+
+
+
+
