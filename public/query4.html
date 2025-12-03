@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>StockTrackr — Items Above Supplier Avg Price</title>
+    <title>StockTrackr — Total Purchase Quantities</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -18,15 +18,17 @@
                 </a>
                 <div class="brand-text">Stock<span class="brand-highlight">Trackr</span></div>
             </div>
+
             <nav class="navlinks">
                 <a href="index.html">Dashboard</a>
                 <a href="query1.html">Orders</a>
                 <a href="query2.html">Categories</a>
-                <a href="query3.html" aria-current="page">Stock Comparison</a>
-                <a href="query4.html">Purchase Quantities</a>
+                <a href="query3.html">Stock Comparison</a>
+                <a href="query4.html" aria-current="page">Purchase Quantities</a>
                 <a href="query6.html">Transactions</a>
             </nav>
         </div>
+
         <div class="right-actions">
             <button class="btn ghost">Manager</button>
             <button class="btn">Logout</button>
@@ -35,20 +37,18 @@
 
     <main class="main">
         <div class="title">
-            <h1>Items Above Supplier Average Price</h1>
-            <p class="subtitle">Displays items priced higher than the average for their supplier</p>
+            <h1>Total Purchase Order Quantities</h1>
+            <p class="subtitle">
+                View all items with aggregated purchase order quantities using FULL OUTER JOIN emulation.
+            </p>
         </div>
 
         <div class="card">
-            <form id="supplierAvgForm">
-                <div class="form-group">
-                    <label for="supplierId">Supplier (optional)</label>
-                    <select id="supplierId" name="supplierId">
-                        <option value="">All Suppliers</option>
-                    </select>
-                    <small style="color:#666; font-size:13px;">Choose a supplier or leave blank for all</small>
-                </div>
-                <button type="submit" class="btn-primary">Search Items</button>
+            <form id="purchaseQuantityForm">
+                <p style="margin:0 0 10px 0; color:#333;">
+                    This query does not require input. Click below to load results.
+                </p>
+                <button type="submit" class="btn-primary">Load Item Purchase Totals</button>
             </form>
         </div>
 
@@ -56,15 +56,13 @@
             <div class="results-card">
                 <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Results</h3>
                 <div id="messageContainer"></div>
+
                 <table id="resultsTable" class="hidden">
                     <thead>
                         <tr>
                             <th>Item ID</th>
                             <th>Item Name</th>
-                            <th>Supplier</th>
-                            <th>Category</th>
-                            <th>Stock</th>
-                            <th>Price</th>
+                            <th>Total Purchased</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -75,30 +73,9 @@
 </div>
 
 <script>
-/* Load suppliers into dropdown on page load */
-async function loadSuppliers() {
-    const select = document.getElementById('supplierId');
-
-    try {
-        const response = await fetch('/api/suppliers');
-        const suppliers = await response.json();
-
-        suppliers.forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.supplier_id;
-            opt.textContent = s.supplier_name;
-            select.appendChild(opt);
-        });
-    } catch (err) {
-        console.error('Failed to load suppliers:', err);
-    }
-}
-loadSuppliers();
-
-document.getElementById('supplierAvgForm').addEventListener('submit', async function(event) {
+document.getElementById('purchaseQuantityForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    const supplierId = document.getElementById('supplierId').value;
     const resultsSection = document.getElementById('resultsSection');
     const resultsTable = document.getElementById('resultsTable');
     const tableBody = document.getElementById('tableBody');
@@ -110,30 +87,25 @@ document.getElementById('supplierAvgForm').addEventListener('submit', async func
     resultsTable.classList.add('hidden');
 
     try {
-        let url = '/api/items/above-average';
-        if (supplierId) url += `?supplier_id=${encodeURIComponent(supplierId)}`;
-
-        const response = await fetch(url);
+        const response = await fetch('/api/query4/purchase-totals');
         const data = await response.json();
 
         if (response.ok && Array.isArray(data)) {
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item.item_id}</td>
-                    <td>${item.item_name}</td>
-                    <td>${item.supplier_name}</td>
-                    <td>${item.category_id}</td>
-                    <td>${item.quantity_in_stock}</td>
-                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    <td>${item.item_id ?? 'N/A'}</td>
+                    <td>${item.item_name ?? 'Unknown Item'}</td>
+                    <td>${item.total_purchased ?? 0}</td>
                 `;
                 tableBody.appendChild(row);
             });
+
             resultsTable.classList.remove('hidden');
         } else {
             messageContainer.innerHTML = `
                 <div class="alert alert-info">
-                    ${data.message || 'No items found.'}
+                    ${data.message || 'No purchase data found.'}
                 </div>
             `;
         }
@@ -141,7 +113,7 @@ document.getElementById('supplierAvgForm').addEventListener('submit', async func
         console.error('Error:', error);
         messageContainer.innerHTML = `
             <div class="alert alert-error">
-                Error fetching data. Please try again.
+                Error fetching purchase totals. Please try again.
             </div>
         `;
     }
