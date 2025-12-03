@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockTrackr — Total Purchase Quantities</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div style="display:flex; align-items:center;">
+            <div class="brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <img src="assets/logo.png" alt="StockTrackr logo" width="46" height="46">
+                    </div>
+                </a>
+                <div class="brand-text">Stock<span class="brand-highlight">Trackr</span></div>
+            </div>
+
+            <nav class="navlinks">
+                <a href="index.html">Dashboard</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html">Categories</a>
+                <a href="query3.html">Stock Comparison</a>
+                <a href="query4.html" aria-current="page">Purchase Quantities</a>
+                <a href="query5.html">Contact List</a>
+                <a href="query6.html">Transactions</a>
+            </nav>
+        </div>
+
+        <div class="right-actions">
+            <button class="btn ghost">Manager</button>
+            <button class="btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="title">
+            <h1>Total Purchase Order Quantities</h1>
+            <p class="subtitle">
+                View all items with aggregated purchase order quantities using FULL OUTER JOIN emulation.
+            </p>
+        </div>
+
+        <div class="card">
+            <form id="purchaseQuantityForm">
+                <p style="margin:0 0 10px 0; color:#333;">
+                    This query does not require input. Click below to load results.
+                </p>
+                <button type="submit" class="btn-primary">Load Item Purchase Totals</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="hidden">
+            <div class="results-card">
+                <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Results</h3>
+                <div id="messageContainer"></div>
+
+                <table id="resultsTable" class="hidden">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Total Purchased</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+document.getElementById('purchaseQuantityForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsTable = document.getElementById('resultsTable');
+    const tableBody = document.getElementById('tableBody');
+    const messageContainer = document.getElementById('messageContainer');
+
+    tableBody.innerHTML = '';
+    messageContainer.innerHTML = '';
+    resultsSection.classList.remove('hidden');
+    resultsTable.classList.add('hidden');
+
+    try {
+        const response = await fetch('/api/query4/purchase-totals');
+        const data = await response.json();
+
+        if (response.ok && Array.isArray(data)) {
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.item_id ?? 'N/A'}</td>
+                    <td>${item.item_name ?? 'Unknown Item'}</td>
+                    <td>${item.total_purchased ?? 0}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            resultsTable.classList.remove('hidden');
+        } else {
+            messageContainer.innerHTML = `
+                <div class="alert alert-info">
+                    ${data.message || 'No purchase data found.'}
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        messageContainer.innerHTML = `
+            <div class="alert alert-error">
+                Error fetching purchase totals. Please try again.
+            </div>
+        `;
+    }
+});
+</script>
+</body>
+</html>
