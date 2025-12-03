@@ -20,9 +20,11 @@
             </div>
             <nav class="navlinks">
                 <a href="index.html" aria-current="page">Dashboard</a>
-                <a href="query1.html">Transactions</a>
-                <a href="query2.html">Inventory</a>
-                <a href="query6.html">Fund Transfer</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html">Categories</a>
+                <a href="query3.html">Stock Comparison</a>
+                <a href="query4.html">Purchase Quantities</a>
+                <a href="query6.html">Transactions</a>
             </nav>
         </div>
         <div class="right-actions">
@@ -39,14 +41,14 @@
 
         <div class="query-grid">
             <a href="query1.html" class="query-card">
-                <h3>📊 Query 1: Sale Transaction Details</h3>
-                <p>Comprehensive sales transaction audit joining tables: transaction-id, date, users, items, category, quantity, order total, and customer.</p>
+                <h3>📦 Query 1: Order Details</h3>
+                <p>View complete order information including supplier/customer details and line items for both purchase and sales orders.</p>
                 <span class="query-badge badge-html">Direct HTML</span>
             </a>
 
             <a href="query2.html" class="query-card">
-                <h3>📈 Query 2: Net Inventory Change</h3>
-                <p>Calculate net inventory change (In vs Out) per item with projected stock levels using aggregation and CASE statements.</p>
+                <h3>📊 Query 2: High-Demand Categories</h3>
+                <p>Find items in categories with high order volumes using nested queries and GROUP BY aggregation.</p>
                 <span class="query-badge badge-json">JSON Pattern</span>
             </a>
 

@@ -8,8 +8,8 @@ const query1Controller = require('./controllers/query1');
 const query2Controller = require('./controllers/query2');
 const query3Controller = require('./controllers/query3');
 const query4Controller = require('./controllers/query4');
-const query5Controller = require('./controllers/query5');
-const query6Controller = require('./controllers/query6');
+//const query5Controller = require('./controllers/query5');
+//const query6Controller = require('./controllers/query6');
 
 const app = express();
 
@@ -21,20 +21,17 @@ app.use(express.static('public'));
 // Routes
 app.get('/query1', query1Controller.getOrderDetails);
 app.get('/api/high-demand-categories', query2Controller.getHighDemandCategories);
+app.get('/api/items/above-average', query3Controller.getItemsAboveSupplierAvg);
+app.get('/api/suppliers', query3Controller.getSupplierList);
+app.get('/api/query4/purchase-totals', query4Controller.getItemPurchaseQuantities);
 
-Query 3: Stock Comparison
-app.get('/api/stock-comparison', query3Controller.getStockComparison);
+// Query 5: Category Items Union
+//app.get('/query5', query5Controller.getCategoryItemsUnion);
 
-Query 4: All Items with Purchase Quantities
-app.get('/api/items-purchase-quantities', query4Controller.getItemsWithPurchaseQuantities);
-
-Query 5: Category Items Union
-app.get('/query5', query5Controller.getCategoryItemsUnion);
-
-Query 6: Transaction Processing, Fund Transfer
-app.post('/api/transfer', query6Controller.transferFunds);
-app.get('/api/bank-accounts', query6Controller.getBankAccounts);
-app.post('/api/simulate-failure', query6Controller.simulateFailure);
+// Query 6: Transaction Processing, Fund Transfer
+//app.post('/api/transfer', query6Controller.transferFunds);
+//app.get('/api/bank-accounts', query6Controller.getBankAccounts);
+//app.post('/api/simulate-failure', query6Controller.simulateFailure);
 
 
 // Health check
@@ -94,7 +91,3 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to stop the server');
   console.log('.'.repeat(60));
 });
-
-
-
-

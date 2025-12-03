@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>StockTrackr — Inventory Change Analysis</title>
+    <title>StockTrackr — High-Demand Categories</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -22,9 +22,11 @@
             </div>
             <nav class="navlinks">
                 <a href="index.html">Dashboard</a>
-                <a href="query1.html">Transactions</a>
-                <a href="query2.html" aria-current="page">Inventory</a>
-                <a href="query6.html">Fund Transfer</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html" aria-current="page">Categories</a>
+                <a href="query3.html">Stock Comparison</a>
+                <a href="query4.html">Purchase Quantities</a>
+                <a href="query6.html">Transactions</a>
             </nav>
         </div>
         <div class="right-actions">
@@ -35,32 +37,34 @@
 
     <main class="main">
         <div class="title">
-            <h1>Net Inventory Change Analysis</h1>
-            <p class="subtitle">Calculate net inventory change (In vs Out) with projections</p>
+            <h1>High-Demand Categories</h1>
+            <p class="subtitle">Items in categories with high total order volume</p>
         </div>
 
         <div class="card">
-            <p style="margin:0 0 20px 0; color:#666; line-height:1.6;">
-                This report shows the net change in inventory per item by analyzing all 
-                <strong>IN</strong> and <strong>OUT</strong> transactions.
-            </p>
-            <button id="loadBtn" class="btn-primary">Load Inventory Analysis</button>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="minQuantity">Minimum Total Orders (units)</label>
+                    <input type="number" id="minQuantity" name="minQuantity" value="50" min="1" required />
+                    <small style="color:#666; font-size:13px;">Shows items from categories where total ordered quantity exceeds this value</small>
+                </div>
+                
+                <button type="submit" class="btn-primary">Search Categories</button>
+            </form>
         </div>
 
         <div id="resultsSection" class="hidden">
-            <div class="card">
-                <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Inventory Change Report</h3>
+            <div class="results-card">
+                <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Results</h3>
                 <div id="messageContainer"></div>
                 <table id="resultsTable" class="hidden">
                     <thead>
                         <tr>
-                            <th>Item</th>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
                             <th>Category</th>
-                            <th>Current Stock</th>
-                            <th>Total In</th>
-                            <th>Total Out</th>
-                            <th>Net Change</th>
-                            <th>Projected Stock</th>
+                            <th>Stock</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -71,41 +75,45 @@
 </div>
 
 <script>
-    document.getElementById('loadBtn').addEventListener('click', async function() {
+    document.getElementById('categoryForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const minQuantity = document.getElementById('minQuantity').value;
         const resultsSection = document.getElementById('resultsSection');
         const resultsTable = document.getElementById('resultsTable');
         const tableBody = document.getElementById('tableBody');
         const messageContainer = document.getElementById('messageContainer');
         
+        // Clear previous results
         tableBody.innerHTML = '';
         messageContainer.innerHTML = '';
         resultsSection.classList.remove('hidden');
         resultsTable.classList.add('hidden');
         
         try {
-            const response = await fetch('/api/high-demand-categories');
+            const response = await fetch(`/api/high-demand-categories?minQuantity=${encodeURIComponent(minQuantity)}`);
             const data = await response.json();
             
             if (response.ok && Array.isArray(data)) {
+                // Display results in table
                 data.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td>${item.item_id}</td>
                         <td>${item.item_name}</td>
-                        <td>${item.category_name || 'N/A'}</td>
-                        <td>${item.current_stock}</td>
-                        <td>${item.total_in}</td>
-                        <td>${item.total_out}</td>
-                        <td style="font-weight:700; color:${item.net_change >= 0 ? '#2d6a2d' : '#991b1b'}">${item.net_change}</td>
-                        <td>${item.projected_stock}</td>
+                        <td>${item.category_name}</td>
+                        <td>${item.quantity_in_stock}</td>
+                        <td>$${parseFloat(item.price).toFixed(2)}</td>
                     `;
                     tableBody.appendChild(row);
                 });
                 
                 resultsTable.classList.remove('hidden');
             } else {
+                // No results found
                 messageContainer.innerHTML = `
                     <div class="alert alert-info">
-                        ${data.message || 'No inventory data found'}
+                        ${data.message || 'No items found matching criteria'}
                     </div>
                 `;
             }
