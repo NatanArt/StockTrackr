@@ -22,9 +22,9 @@
             </div>
             <nav class="navlinks">
                 <a href="index.html">Dashboard</a>
-                <a href="query1.html" aria-current="page">Orders</a>
+                <a href="query1.html">Orders</a>
                 <a href="query2.html">Categories</a>
-                <a href="query3.html">Users Without Transactions</a>
+                <a href="query3.html" aria-current="page">Users Without Transactions</a>
                 <a href="query6.html">Transactions</a>
             </nav>
         </div>
@@ -36,23 +36,14 @@
 
     <main class="main">
         <div class="title">
-            <h1>Search Orders</h1>
-            <p class="subtitle">View complete order information with line items</p>
+            <h1>Find Users</h1>
+            <p class="subtitle">Usernames and emails of users who have not made any transactions</p>
         </div>
 
         <div class="card">
-            <form action="/query1" method="GET">
-                <div class="form-group">
-                    <label for="orderType">Order Type</label>
-                    <select id="orderType" name="orderType" required>
-                        <option value="Purchase">Purchase Orders (from suppliers)</option>
-                        <option value="Sale">Sales Orders (to customers)</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn-primary">View Orders</button>
+            <form action="/query3" method="GET">                
+                <button type="submit" class="btn-primary">View Users Without Transactions</button>
             </form>
-        </div>
     </main>
 </div>
 </body>
