@@ -81,6 +81,7 @@ function generateResultsPage(orderType, results) {
                 <a href="/query2.html">Categories</a>
                 <a href="/query3.html">Stock Comparison</a>
                 <a href="/query4.html">Purchase Quantities</a>
+                <a href="/query5.html">Contact List</a>
                 <a href="/query6.html">Transactions</a>
             </nav>
         </div>

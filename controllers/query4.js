@@ -1,6 +1,6 @@
 // controllers/query4.js
 // StockTrackr - Query 4: Total Purchase Quantities (FULL OUTER JOIN Emulation)
-
+// Pattern: JSON Response
 const db = require('../dbConfig');
 
 const getItemPurchaseQuantities = (req, res) => {
