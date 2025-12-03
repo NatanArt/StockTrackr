@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockTrackr — Items Above Supplier Avg Price</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+        <div style="display:flex; align-items:center;">
+            <div class="brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <img src="assets/logo.png" alt="StockTrackr logo" width="46" height="46">
+                    </div>
+                </a>
+                <div class="brand-text">Stock<span class="brand-highlight">Trackr</span></div>
+            </div>
+            <nav class="navlinks">
+                <a href="index.html">Dashboard</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html">Categories</a>
+                <a href="query3.html" aria-current="page">Stock Comparison</a>
+                <a href="query4.html">Purchase Quantities</a>
+                <a href="query5.html">Contact List</a>
+                <a href="query6.html">Transactions</a>
+            </nav>
+        </div>
+        <div class="right-actions">
+            <button class="btn ghost">Manager</button>
+            <button class="btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="title">
+            <h1>Items Above Supplier Average Price</h1>
+            <p class="subtitle">Displays items priced higher than the average for their supplier</p>
+        </div>
+
+        <div class="card">
+            <form id="supplierAvgForm">
+                <div class="form-group">
+                    <label for="supplierId">Supplier (optional)</label>
+                    <select id="supplierId" name="supplierId">
+                        <option value="">All Suppliers</option>
+                    </select>
+                    <small style="color:#666; font-size:13px;">Choose a supplier or leave blank for all</small>
+                </div>
+                <button type="submit" class="btn-primary">Search Items</button>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="hidden">
+            <div class="results-card">
+                <h3 style="margin:0 0 16px 0; font-size:18px; color:#444;">Results</h3>
+                <div id="messageContainer"></div>
+                <table id="resultsTable" class="hidden">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Supplier</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+/* Load suppliers into dropdown on page load */
+async function loadSuppliers() {
+    const select = document.getElementById('supplierId');
+
+    try {
+        const response = await fetch('/api/suppliers');
+        const suppliers = await response.json();
+
+        suppliers.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.supplier_id;
+            opt.textContent = s.supplier_name;
+            select.appendChild(opt);
+        });
+    } catch (err) {
+        console.error('Failed to load suppliers:', err);
+    }
+}
+loadSuppliers();
+
+document.getElementById('supplierAvgForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const supplierId = document.getElementById('supplierId').value;
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsTable = document.getElementById('resultsTable');
+    const tableBody = document.getElementById('tableBody');
+    const messageContainer = document.getElementById('messageContainer');
+
+    tableBody.innerHTML = '';
+    messageContainer.innerHTML = '';
+    resultsSection.classList.remove('hidden');
+    resultsTable.classList.add('hidden');
+
+    try {
+        let url = '/api/items/above-average';
+        if (supplierId) url += `?supplier_id=${encodeURIComponent(supplierId)}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (response.ok && Array.isArray(data)) {
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.item_id}</td>
+                    <td>${item.item_name}</td>
+                    <td>${item.supplier_name}</td>
+                    <td>${item.category_id}</td>
+                    <td>${item.quantity_in_stock}</td>
+                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            resultsTable.classList.remove('hidden');
+        } else {
+            messageContainer.innerHTML = `
+                <div class="alert alert-info">
+                    ${data.message || 'No items found.'}
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        messageContainer.innerHTML = `
+            <div class="alert alert-error">
+                Error fetching data. Please try again.
+            </div>
+        `;
+    }
+});
+</script>
+</body>
+</html>
