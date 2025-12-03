@@ -77,7 +77,7 @@ function generateResultsPage(results, limit) {
     <main class="main">
         <div class="title">
             <h1>Sale Transaction Details</h1>
-            <p class="subtitle">Comprehensive sales transaction audit (5-table JOIN)</p>
+            <p class="subtitle">Comprehensive sales transaction audit (8-table JOIN)</p>
         </div>
   `;
 
