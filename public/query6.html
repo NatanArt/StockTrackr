@@ -67,7 +67,15 @@
         <div class="card">
             <h2>Simulate Transaction Failure</h2>
             <form id="simulate-failure-form">
-                <button type="submit" class="btn danger">Simulate Failure (Rollback Demo)</button>
+                <button type="submit" class="btn-primary">Simulate Failure (Rollback Demo)</button>
+            </form>
+        </div>
+
+        <!-- Reset balances -->
+        <div class="card">
+            <h2>Reset Balances</h2>
+            <form id="reset-balances-form">
+                <button type="submit" class="btn-primary">Reset to Original</button>
             </form>
         </div>
 
@@ -97,7 +105,7 @@
                 html += `<tr>
                         <td>${acc.account_id}</td>
                         <td>${acc.name}</td>
-                        <td>$${acc.balance.toFixed(2)}</td>
+                        <td>$${acc.balance}</td>
                     </tr>`;
             });
             html += '</tbody></table>';
@@ -130,6 +138,20 @@
             alert(data.message);
         } catch (err) {
             alert('Error simulating failure: ' + err.message);
+        }
+    });
+
+    // Reset balances
+    document.getElementById('reset-balances-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+            const res = await fetch('/query6/reset-balances', { method: 'POST' });
+            const data = await res.json();
+            alert(data.message);
+            // Optionally refresh the accounts table automatically
+            document.getElementById('view-accounts-btn').click();
+        } catch (err) {
+            alert('Error resetting balances: ' + err.message);
         }
     });
 </script>

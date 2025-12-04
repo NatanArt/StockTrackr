@@ -97,8 +97,31 @@ const simulateFailure = (req, res) => {
     });
 };
 
+// POST: Reset balances to original values
+const resetBalances = (req, res) => {
+    const resetSQL = `
+        UPDATE BankAccounts
+        SET balance = CASE
+            WHEN account_id = 1 THEN 500
+            WHEN account_id = 2 THEN 300
+            ELSE balance
+        END
+        WHERE account_id IN (1,2);
+    `;
+
+    db.query(resetSQL, (err, result) => {
+        if (err) {
+            console.error("Reset balances error:", err);
+            return res.status(500).json({ status: "error", message: "Could not reset balances" });
+        }
+
+        res.json({ status: "success", message: "Balances reset to original values" });
+    });
+};
+
 module.exports = {
     transferFunds,
     getBankAccounts,
-    simulateFailure
+    simulateFailure,
+    resetBalances
 };

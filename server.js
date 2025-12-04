@@ -9,7 +9,7 @@ const query2Controller = require('./controllers/query2');
 const query3Controller = require('./controllers/query3');
 const query4Controller = require('./controllers/query4');
 const query5Controller = require('./controllers/query5');
-//const query6Controller = require('./controllers/query6');
+const query6Controller = require('./controllers/query6');
 
 const app = express();
 
@@ -28,9 +28,11 @@ app.get('/api/query4/purchase-totals', query4Controller.getItemPurchaseQuantitie
 app.get('/query5', query5Controller.getEmailDetails);
 
 // Query 6: Transaction Processing, Fund Transfer
-//app.post('/query6/transfer', query6Controller.transferFunds);
-//app.get('/query6/bank-accounts', query6Controller.getBankAccounts);
-//app.post('/query6/simulate-failure', query6Controller.simulateFailure);
+app.post('/query6/transfer', query6Controller.transferFunds);
+app.get('/query6/bank-accounts', query6Controller.getBankAccounts);
+app.post('/query6/simulate-failure', query6Controller.simulateFailure);
+app.post('/query6/reset-balances', query6Controller.resetBalances);
+
 
 
 // Health check
