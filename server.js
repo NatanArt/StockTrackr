@@ -28,9 +28,9 @@ app.get('/api/query4/purchase-totals', query4Controller.getItemPurchaseQuantitie
 app.get('/query5', query5Controller.getEmailDetails);
 
 // Query 6: Transaction Processing, Fund Transfer
-//app.post('/api/transfer', query6Controller.transferFunds);
-//app.get('/api/bank-accounts', query6Controller.getBankAccounts);
-//app.post('/api/simulate-failure', query6Controller.simulateFailure);
+//app.post('/query6/transfer', query6Controller.transferFunds);
+//app.get('/query6/bank-accounts', query6Controller.getBankAccounts);
+//app.post('/query6/simulate-failure', query6Controller.simulateFailure);
 
 
 // Health check

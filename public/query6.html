@@ -1,10 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>StockTrackr — Transactions</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+<div class="app">
+
+    <header class="topbar">
+        <div style="display:flex; align-items:center;">
+            <div class="brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <img src="assets/logo.png" alt="StockTrackr logo" width="46" height="46">
+                    </div>
+                </a>
+                <div>
+                    <div style="font-weight:800; font-size:18px; letter-spacing:-0.2px;">
+                        Stock<span style="color:#F6A800">Trackr</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="navlinks">
+                <a href="index.html">Dashboard</a>
+                <a href="query1.html">Orders</a>
+                <a href="query2.html">Categories</a>
+                <a href="query3.html">Stock Comparison</a>
+                <a href="query4.html">Purchase Quantities</a>
+                <a href="query5.html">Contact List</a>
+                <a href="query6.html" aria-current="page">Transactions</a>
+            </nav>
+        </div>
+
+        <div class="right-actions">
+            <button class="btn ghost">Manager</button>
+            <button class="btn">Logout</button>
+        </div>
+    </header>
+
+    <main class="main">
+
+        <div class="title">
+            <h1>Transaction Processing</h1>
+            <p class="subtitle">Explore how MySQL handles BEGIN / COMMIT / ROLLBACK</p>
+        </div>
+
+        <!-- Card for viewing accounts -->
+        <div class="card" id="accounts-card">
+            <h2>Bank Accounts</h2>
+            <button id="view-accounts-btn" class="btn-primary">View Bank Accounts</button>
+            <div id="accounts-table-container" style="margin-top:16px;"></div>
+        </div>
+
+        <!-- Make a Transfer -->
+        <div class="card">
+            <h2>Transfer $100 from Alice to Bob</h2>
+            <form id="transfer-form">
+                <button type="submit" class="btn-primary">Make Transfer</button>
+            </form>
+        </div>
+
+        <!-- Simulate Failure -->
+        <div class="card">
+            <h2>Simulate Transaction Failure</h2>
+            <form id="simulate-failure-form">
+                <button type="submit" class="btn danger">Simulate Failure (Rollback Demo)</button>
+            </form>
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+    // Fetch and display bank accounts dynamically
+    document.getElementById('view-accounts-btn').addEventListener('click', async () => {
+        const container = document.getElementById('accounts-table-container');
+        container.innerHTML = 'Loading...';
+
+        try {
+            const res = await fetch('/query6/bank-accounts');
+            if (!res.ok) throw new Error('Failed to fetch bank accounts');
+            const data = await res.json();
+
+            if (data.status !== 'success') {
+                container.innerHTML = `<p>${data.message}</p>`;
+                return;
+            }
+
+            // Build table
+            let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Balance</th></tr></thead><tbody>';
+            data.accounts.forEach(acc => {
+                html += `<tr>
+                        <td>${acc.account_id}</td>
+                        <td>${acc.name}</td>
+                        <td>$${acc.balance.toFixed(2)}</td>
+                    </tr>`;
+            });
+            html += '</tbody></table>';
+
+            container.innerHTML = html;
+
+        } catch (err) {
+            container.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+        }
+    });
+
+    // Trigger fixed transfer via AJAX
+    document.getElementById('transfer-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+            const res = await fetch('/query6/transfer', { method: 'POST' });
+            const data = await res.json();
+            alert(data.message);
+        } catch (err) {
+            alert('Error performing transfer: ' + err.message);
+        }
+    });
+
+    // Simulate failure via AJAX
+    document.getElementById('simulate-failure-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+            const res = await fetch('/query6/simulate-failure', { method: 'POST' });
+            const data = await res.json();
+            alert(data.message);
+        } catch (err) {
+            alert('Error simulating failure: ' + err.message);
+        }
+    });
+</script>
 
 </body>
 </html>
