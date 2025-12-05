@@ -21,20 +21,18 @@ app.use(express.static('public'));
 // Routes
 app.get('/query1', query1Controller.getOrderDetails);
 app.get('/api/high-demand-categories', query2Controller.getHighDemandCategories);
+app.get('/api/items/above-average', query3Controller.getItemsAboveSupplierAvg);
+app.get('/api/suppliers', query3Controller.getSupplierList);
+app.get('/api/query4/purchase-totals', query4Controller.getItemPurchaseQuantities);
+// Query 5: Category Items Union
+app.get('/query5', query5Controller.getEmailDetails);
 
-Query 3: Stock Comparison
-app.get('/api/stock-comparison', query3Controller.getStockComparison);
+// Query 6: Transaction Processing, Fund Transfer
+app.post('/query6/transfer', query6Controller.transferFunds);
+app.get('/query6/bank-accounts', query6Controller.getBankAccounts);
+app.post('/query6/simulate-failure', query6Controller.simulateFailure);
+app.post('/query6/reset-balances', query6Controller.resetBalances);
 
-Query 4: All Items with Purchase Quantities
-app.get('/api/items-purchase-quantities', query4Controller.getItemsWithPurchaseQuantities);
-
-Query 5: Category Items Union
-app.get('/query5', query5Controller.getCategoryItemsUnion);
-
-Query 6: Transaction Processing, Fund Transfer
-app.post('/api/transfer', query6Controller.transferFunds);
-app.get('/api/bank-accounts', query6Controller.getBankAccounts);
-app.post('/api/simulate-failure', query6Controller.simulateFailure);
 
 
 // Health check
@@ -94,7 +92,3 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to stop the server');
   console.log('.'.repeat(60));
 });
-
-
-
-
